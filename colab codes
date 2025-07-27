@@ -1,0 +1,61 @@
+from google.colab import drive
+drive.mount('/content/drive')
+
+  
+  
+# Install YOLOv9 (Ultralytics)
+!pip install ultralytics --upgrade
+
+
+  
+from ultralytics import YOLO
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+
+import zipfile
+import os
+
+# Path to the ZIP file in your Drive or Colab environment
+zip_path = "file_path"
+
+# Target directory where the dataset will be extracted
+extract_path = "/content/data/Drive"  #upload the zipfile in google drive
+
+# Create the target directory if it doesn't exist
+os.makedirs(extract_path, exist_ok=True)
+
+# Unzip the dataset
+with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+    zip_ref.extractall(extract_path)
+
+print("Dataset extracted successfully.")
+
+
+  
+from ultralytics import YOLO
+model=YOLO('yolov9s.pt')
+
+
+
+model.train(data="file_path", epochs=50, imgsz=640, batch=16)          # It will take much time, so have patience. # If you want you can increase the epochs for better result.
+  
+
+
+
+# Evaluate the model on the test set
+results = model.val()
+print(f"Model validation results: {results}")
+
+
+
+# Load your trained model
+model_path = '/content/runs/detect/train/weights/best.pt'  # Path to your best weights
+model = YOLO(model_path)
+
+
+
+
+# Now download the trained model(best.pt) and then import it in YOLOvX application on any Andriod or IOS.
